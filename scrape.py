@@ -54,3 +54,16 @@ class LunchboxScraper:
         f = self.opener.open(req)
         
         return f.read()
+
+    def past_order(self, order_id):
+        if not self.logged_in:
+            raise ScrapeError("Not logged in.")
+        
+        past_order_url = 'http://lunchbox.fm/orders/view_past/%d' % order_id
+        req = urllib2.Request(past_order_url)
+        f = self.opener.open(req)
+        
+        if f.geturl() != past_order_url:
+            raise ScrapeError("Unable to view order %d." % order_id)
+
+        return f.read()
