@@ -49,7 +49,7 @@ class LunchboxScraper:
         if not self.logged_in:
             raise ScrapeError("Not logged in.")
         
-        past_orders_url = lunchbox.fm/orders/past
+        past_orders_url = 'http://lunchbox.fm/orders/past'
         req = urllib2.Request(past_orders_url)
         f = self.opener.open(req)
         
