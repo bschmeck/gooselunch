@@ -1,3 +1,4 @@
+import cookielib
 from datetime import datetime
 import re
 import urllib
@@ -7,16 +8,16 @@ class ParseError(Exception):
     pass
 
 # Logging into lunchbox.fm:
+jar = cookielib.CookieJar()
+opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(jar))
 login_url = "http://lunchbox.fm"
-f = urllib2.urlopen(login_url)
+f = opener.open(login_url)
 login_page = f.read()
 # Grab data[_Token][fields] and data[_Token][key] from the form
 values = {'data[User][email]': 'ben@aisle50.com', 'data[User][password]': 'XXXXX', 'data[User][remember_me]': 0, 'data[_Token][key]': 'KEY', 'data[_Token][fields]': 'FIELDS'}
 data = urllib.urlencode(values)
-# Grab cookie string from f.headers
-headers = {'Cookie': cookie_string }
 req = urllib2.Request(login_url, data, headers)
-f = urllib2.urlopen(req)
+f = opener.open(req)
 
 # Check that we were authenticated
 f.geturl() == 'http://lunchbox.fm/orders'
