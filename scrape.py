@@ -1,4 +1,5 @@
 import cookielib
+import re
 import urllib
 import urllib2
 
@@ -14,14 +15,28 @@ class LunchboxScraper:
     def login(self, email, password):
         login_url = "http://lunchbox.fm"
         f = self.opener.open(login_url)
+
         login_page = f.read()
+        # We need to submit 2 hidden fields along with email and password
+        # There are 2 forms on the page, login and forgot password, we need the
+        # the key and fields token from the login form, which comes first
+        match = re.search('data\[_Token\]\[fields\]" value="(.*?)"', login_page)
+        if match:
+            fields_token = match.group(1)
+        else:
+            raise ScrapeError("Unable to find data[_Token][fields]")
+        match = re.search('data\[_Token\]\[key\]" value="(.*?)"', login_page)
+        if match:
+            key_token = match.group(1)
+        else:
+            raise ScrapeError("Unable to find data[_Token][key]")
 
         # Grab data[_Token][fields] and data[_Token][key] from the form
         values = {'data[User][email]': email,
                   'data[User][password]': password,
                   'data[User][remember_me]': 0, 
-                  'data[_Token][key]': 'KEY', 
-                  'data[_Token][fields]': 'FIELDS'}
+                  'data[_Token][key]': key_token, 
+                  'data[_Token][fields]': fields_token}
 
         data = urllib.urlencode(values)
         req = urllib2.Request(login_url, data)
