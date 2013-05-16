@@ -17,8 +17,8 @@ class LunchboxScraper:
         login_page = f.read()
 
         # Grab data[_Token][fields] and data[_Token][key] from the form
-        values = {'data[User][email]': 'ben@aisle50.com', 
-                  'data[User][password]': 'XXXXX', 
+        values = {'data[User][email]': email,
+                  'data[User][password]': password,
                   'data[User][remember_me]': 0, 
                   'data[_Token][key]': 'KEY', 
                   'data[_Token][fields]': 'FIELDS'}
