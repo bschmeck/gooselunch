@@ -1,12 +1,31 @@
 from datetime import datetime
 import re
+import urllib
+import urllib2
 
 class ParseError(Exception):
     pass
 
-# Read in the list of past orders at:
-# lunchbox.fm/orders/past
-# Store that in content
+# Logging into lunchbox.fm:
+login_url = "http://lunchbox.fm"
+f = urllib2.urlopen(login_url)
+login_page = f.read()
+# Grab data[_Token][fields] and data[_Token][key] from the form
+values = {'data[User][email]': 'ben@aisle50.com', 'data[User][password]': 'XXXXX', 'data[User][remember_me]': 0, 'data[_Token][key]': 'KEY', 'data[_Token][fields]': 'FIELDS'}
+data = urllib.urlencode(values)
+# Grab cookie string from f.headers
+headers = {'Cookie': cookie_string }
+req = urllib2.Request(login_url, data, headers)
+f = urllib2.urlopen(req)
+
+# Check that we were authenticated
+f.geturl() == 'http://lunchbox.fm/orders'
+
+# Read in the list of past orders and store in content
+past_orders_url = lunchbox.fm/orders/past
+req = urllib2.Request(past_orders_url, headers=headers)
+f = urllib2.urlopen(req)
+content = f.read()
 
 # Set up some regexes:
 # Find the URLs of past orders on the past order list page
