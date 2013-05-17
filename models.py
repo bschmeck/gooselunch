@@ -20,6 +20,8 @@ class LunchboxParser:
         self.name_regex = re.compile("<td><strong>(?P<name>[A-Z].*?)</strong> wanted")
 
         self._info_match = None
+        self.orders_page = None
+        self.order_page = None
         
     def set_orders_page(self):
         self.orders_page = self.lunchbox.past_orders()
@@ -47,9 +49,11 @@ class LunchboxParser:
                 pass
                 
     def order_ids(self):
+        self.require_orders_page("order_ids")
         return map(lambda x: x.group('order_id'), self.order_regex.finditer(self.orders_page))
 
     def info_match(self):
+        self.require_order_page("info_match")
         if not self._info_match:
             self._info_match = self.info_regex.search(self.order_page)
         if not self._info_match:
@@ -58,13 +62,24 @@ class LunchboxParser:
         return self._info_match
     
     def order_date(self):
+        self.require_order_page("order_date")
         return datetime.strptime(self.info_match().group('date_string').strip(), "%A, %B %d, %Y")
     
     def restaurant(self):
+        self.require_order_page("restaurant")
         return self.info_match().group('restaurant')
     
     def names(self):
+        self.require_order_page("names")
         return map(lambda x: x.group('name'), self.name_regex.finditer(self.order_page))
+
+    def require_orders_page(self, method_name):
+        if not self.orders_page:
+            raise ParseError('Cannot call %s before set_orders_page.' % method_name)
+
+    def require_order_page(self, method_name):
+        if not self.order_page:
+            raise ParseError('Cannot call %s before set_order_page.' % method_name)
 
 class LunchboxScraper:
     def __init__(self):
