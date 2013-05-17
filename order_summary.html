@@ -1,0 +1,22 @@
+<html>
+  <body>
+    <p class="date_desc">
+      Order totals from {{ start_str }} through {{ end_str }}
+    </p>
+    <table>
+      <thead>
+        <tr>
+          <th>Person</th>
+          <th>Orders</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for (name, count) in totals.iteritems(): %}
+        <tr>
+          <td>{{ name }}</td>
+          <td>{{ count }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+  </body>
+</html>
