@@ -9,16 +9,13 @@ from db_models import LunchOrder, Person
 JINJA_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 
-def daterange(arr):
-        # We are either called with a single date, e.g. 20130401, or a date range 20130401...20130407
-        # The way our URL regex works, this shows up as two elements in a list:
-        # ["20130401", None] for single dates and ["20130401", "...20130407"] for the range
-        # We strip the None (if present) from the list, then join to create a single string
-        # Then split on "..." to get a 1 or 2 elt list, and map that to create start and end dates
-        daterange = "".join(filter(None, arr))
-        dates = map(lambda s: datetime.strptime(s, "%Y%m%d").date(), daterange.split("..."))
-        start = dates[0]
-        end = dates[1] if len(dates) == 2 else start
+def dates_from_request(request):
+        start = request.get("start")
+        if start:
+            start = datetime.strptime(start, "%Y%m%d").date()
+        end = request.get("end")
+        if end:
+            end = datetime.strptime(end, "%Y%m%d").date()
         
         return (start, end)
 
@@ -35,13 +32,7 @@ class Cron(webapp2.RequestHandler):
     
 class OrderSummary(webapp2.RequestHandler):
     def get(self):
-        start = self.request.get("start")
-        if start:
-            start = datetime.strptime(start, "%Y%m%d").date()
-        end = self.request.get("end")
-        if end:
-            end = datetime.strptime(end, "%Y%m%d").date()
-        
+        start, end = dates_from_request(self.request)
         if start > end:
             self.abort(400)
     
@@ -70,13 +61,7 @@ class OrderSummary(webapp2.RequestHandler):
         
 class PersonSummary(webapp2.RequestHandler):
     def get(self, name):
-        start = self.request.get("start")
-        if start:
-            start = datetime.strptime(start, "%Y%m%d").date()
-        end = self.request.get("end")
-        if end:
-            end = datetime.strptime(end, "%Y%m%d").date()
-
+        start, end = dates_from_request(self.request)
         if start > end:
             self.abort(400)
             
