@@ -22,6 +22,7 @@ class LunchboxParser:
         self._info_match = None
         self.orders_page = None
         self.order_page = None
+        self.lunchbox = None
         
     def set_orders_page(self):
         self.orders_page = self.lunchbox.past_orders()
@@ -29,12 +30,14 @@ class LunchboxParser:
     def set_order_page(self, order_id):
         self.order_page = self.lunchbox.past_order(order_id)
         
-    def parse(self, email, password):
-        self.lunchbox = LunchboxScraper()
-        self.lunchbox.login(email, password)
-
-        if not self.lunchbox.logged_in:
-            raise ParseError("Invalid email or password.")
+    def set_scraper(self, scraper):
+        if not scraper.logged_in:
+            raise ValueError("scraper must be logged in.")
+        self.lunchbox = scraper
+        
+    def parse(self):
+        if not self.lunchbox:
+            raise ParseError("Cannot call parse before set_scraper.")
         
         self.set_orders_page()
         for order_id in self.order_ids():
