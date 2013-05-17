@@ -22,6 +22,17 @@ def daterange(arr):
         
         return (start, end)
 
+class Cron(webapp2.RequestHandler):
+    def get(self, job):
+        if job == "scrape":
+            self.scrape()
+        else:
+            self.error(400)
+    
+    def scrape(self):
+        scraper = Scraper.all().get()
+        scraper.scrape()
+    
 class OrderSummary(webapp2.RequestHandler):
     def get(self):
         start = self.request.get("start")
@@ -31,6 +42,9 @@ class OrderSummary(webapp2.RequestHandler):
         if end:
             end = datetime.strptime(end, "%Y%m%d").date()
         
+        if start > end:
+            self.abort(400)
+    
         query = LunchOrder.all()
         if start:
             query.filter("date >= ", start)
@@ -92,6 +106,7 @@ class PersonSummary(webapp2.RequestHandler):
         self.response.write(template.render(template_values))
         
 app = webapp2.WSGIApplication([('^/orders/?$', OrderSummary),
+                               ('/cron/(.*)/?$', Cron),
                                ('^/orders/(.+?)/?$', PersonSummary),],
                               debug=True)
 
