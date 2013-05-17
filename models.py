@@ -24,10 +24,10 @@ class LunchboxParser:
         self.order_page = None
         self.lunchbox = None
         
-    def set_orders_page(self):
+    def scrape_orders_page(self):
         self.orders_page = self.lunchbox.past_orders()
         
-    def set_order_page(self, order_id):
+    def scrape_order_page(self, order_id):
         self.order_page = self.lunchbox.past_order(order_id)
         
     def set_scraper(self, scraper):
@@ -39,10 +39,10 @@ class LunchboxParser:
         if not self.lunchbox:
             raise ParseError("Cannot call parse before set_scraper.")
         
-        self.set_orders_page()
+        self.scrape_orders_page()
         for order_id in self.order_ids():
             # TODO: If we've already processed order_id then continue
-            self.set_order_page(order_id)
+            self.scrape_order_page(order_id)
             order_date = self.order_date()
             restaurant = self.restaurant()
             for name in self.names():
@@ -78,11 +78,11 @@ class LunchboxParser:
 
     def require_orders_page(self, method_name):
         if not self.orders_page:
-            raise ParseError('Cannot call %s before set_orders_page.' % method_name)
+            raise ParseError('Cannot call %s before scrape_orders_page.' % method_name)
 
     def require_order_page(self, method_name):
         if not self.order_page:
-            raise ParseError('Cannot call %s before set_order_page.' % method_name)
+            raise ParseError('Cannot call %s before scrape_order_page.' % method_name)
 
 class LunchboxScraper:
     def __init__(self):
