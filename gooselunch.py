@@ -4,7 +4,8 @@ import jinja2
 import os
 import webapp2
 
-from db_models import LunchOrder
+from db_models import LunchOrder, Person
+
 JINJA_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 
@@ -53,6 +54,44 @@ class OrderSummary(webapp2.RequestHandler):
         template = JINJA_ENVIRONMENT.get_template('order_summary.html')
         self.response.write(template.render(template_values))
         
-app = webapp2.WSGIApplication([('^/orders/?$', OrderSummary)],
+class PersonSummary(webapp2.RequestHandler):
+    def get(self, name):
+        start = self.request.get("start")
+        if start:
+            start = datetime.strptime(start, "%Y%m%d").date()
+        end = self.request.get("end")
+        if end:
+            end = datetime.strptime(end, "%Y%m%d").date()
+
+        if start > end:
+            self.abort(400)
+            
+        person = Person.get_by_key_name(name)
+        if not person:
+            self.abort(404)
+
+        query = person.lunch_orders
+        if start:
+            query.filter("date >= ", start)
+        if end:
+            query.filter("date <= ", end)
+        
+        template_values = {'count': query.count(),
+                           'query': query,
+                           'person': person}
+        if start:
+            template_values['start_str'] = start.strftime("%m/%d/%Y")
+        else:
+            template_values['start_str'] = "the beginning of time"
+        if end:
+            template_values['end_str'] = end.strftime("%m/%d/%Y")
+        else:
+            template_values['end_str'] = "the end of time"
+
+        template = JINJA_ENVIRONMENT.get_template('person_summary.html')
+        self.response.write(template.render(template_values))
+        
+app = webapp2.WSGIApplication([('^/orders/?$', OrderSummary),
+                               ('^/orders/(.+?)/?$', PersonSummary),],
                               debug=True)
 
