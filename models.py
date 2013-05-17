@@ -53,7 +53,7 @@ class LunchboxParser:
                 
     def order_ids(self):
         self.require_orders_page("order_ids")
-        return map(lambda x: x.group('order_id'), self.order_regex.finditer(self.orders_page))
+        return map(lambda x: int(x.group('order_id')), self.order_regex.finditer(self.orders_page))
 
     def info_match(self):
         self.require_order_page("info_match")
@@ -137,11 +137,11 @@ class LunchboxScraper:
         if not self.logged_in:
             raise ScrapeError("Not logged in.")
         
-        past_order_url = 'http://lunchbox.fm/orders/view_past/' + order_id
+        past_order_url = 'http://lunchbox.fm/orders/view_past/%d' % order_id
         req = urllib2.Request(past_order_url)
         f = self.opener.open(req)
         
         if f.geturl() != past_order_url:
-            raise ScrapeError("Unable to view order " + order_id)
+            raise ScrapeError("Unable to view order %d" % order_id)
 
         return f.read()
