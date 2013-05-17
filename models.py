@@ -15,10 +15,12 @@ class LunchboxParser:
         # Find the URLs of past orders on the past order list page
         self.order_regex = re.compile("/orders/view_past/(?P<order_id>\d+)")
         # Find the date of an order on a past order page
-        self.date_regex = re.compile("<h3 class.*?>(?P<date_string>.*?) from", re.MULTILINE | re.DOTALL)
+        self.info_regex = re.compile("<h3 class.*?>(?P<date_string>.*?) from <a .*?>(?P<restaurant>.*?)</a>", re.MULTILINE | re.DOTALL)
         # Find the names of those who ordered on a past order page
         self.name_regex = re.compile("<td><strong>(?P<name>[A-Z].*?)</strong> wanted")
 
+        self._info_match = None
+        
     def set_orders_page(self):
         self.orders_page = self.lunchbox.past_orders()
         
@@ -37,6 +39,7 @@ class LunchboxParser:
             # TODO: If we've already processed order_id then continue
             self.set_order_page(order_id)
             order_date = self.order_date()
+            restaurant = self.restaurant()
             for name in self.names():
                 # TODO: Check that the person ordered for that day
                 # TODO: Find the person via the name
@@ -46,12 +49,19 @@ class LunchboxParser:
     def order_ids(self):
         return map(lambda x: x.group('order_id'), self.order_regex.finditer(self.orders_page))
 
-    def order_date(self):
-        date_match = self.date_regex.search(self.order_page)
-        if not date_match:
-            raise ParseError("Unable to find date string for order %s" % url)
+    def info_match(self):
+        if not self._info_match:
+            self._info_match = self.info_regex.search(self.order_page)
+        if not self._info_match:
+            raise ParseError("Unable to find info string for order %s" % url)
+        
+        return self._info_match
     
-        return datetime.strptime(date_match.group('date_string').strip(), "%A, %B %d, %Y")
+    def order_date(self):
+        return datetime.strptime(self.info_match().group('date_string').strip(), "%A, %B %d, %Y")
+    
+    def restaurant(self):
+        return self.info_match().group('restaurant')
     
     def names(self):
         return map(lambda x: x.group('name'), self.name_regex.finditer(self.order_page))
