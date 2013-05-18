@@ -33,7 +33,7 @@ class Cron(webapp2.RequestHandler):
 class OrderSummary(webapp2.RequestHandler):
     def get(self):
         start, end = dates_from_request(self.request)
-        if start > end:
+        if start and end and start > end:
             self.abort(400)
     
         query = LunchOrder.all()
@@ -64,7 +64,7 @@ class OrderSummary(webapp2.RequestHandler):
 class PersonSummary(webapp2.RequestHandler):
     def get(self, name):
         start, end = dates_from_request(self.request)
-        if start > end:
+        if start and end and start > end:
             self.abort(400)
             
         person = Person.get_by_key_name(name)
