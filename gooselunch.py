@@ -4,7 +4,7 @@ import jinja2
 import os
 import webapp2
 
-from db_models import LunchOrder, Person
+from db_models import LunchOrder, Person, Scraper
 
 JINJA_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
