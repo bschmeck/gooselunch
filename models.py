@@ -28,6 +28,7 @@ class LunchboxParser:
         self.orders_page = self.lunchbox.past_orders()
         
     def scrape_order_page(self, order_id):
+        self._info_match = None
         self.order_page = self.lunchbox.past_order(order_id)
         
     def set_scraper(self, scraper):
