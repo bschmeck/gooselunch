@@ -50,6 +50,7 @@ class Scraper(db.Model):
                                          person = p)
                 lunch_order.put()
         self.last_scrape = datetime.now()
-        self.highest_scraped_id = high_seen_id
+        if high_seen_id > self.highest_scraped_id:
+            self.highest_scraped_id = high_seen_id
         self.put()
                 
