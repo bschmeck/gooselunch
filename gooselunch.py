@@ -44,7 +44,7 @@ class OrderSummary(webapp2.RequestHandler):
         
         totals = defaultdict(int)
         for lunch_order in query.run():
-            total[lunch_order.person.name] += 1
+            totals[lunch_order.person.name] += 1
             
         template_values = {'totals': totals}
         if start:
