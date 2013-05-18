@@ -44,15 +44,17 @@ class OrderSummary(webapp2.RequestHandler):
         
         totals = defaultdict(int)
         for lunch_order in query.run():
-            totals[lunch_order.person.name] += 1
+            totals[(lunch_order.person.name, lunch_order.person.key().name())] += 1
             
         template_values = {'totals': totals}
         if start:
             template_values['start_str'] = start.strftime("%m/%d/%Y")
+            template_values['start'] = start.strftime("%Y%m%d")
         else:
             template_values['start_str'] = "the beginning of time"
         if end:
             template_values['end_str'] = end.strftime("%m/%d/%Y")
+            template_values['end'] = end.strftime("%Y%m%d")
         else:
             template_values['end_str'] = "the end of time"
 
