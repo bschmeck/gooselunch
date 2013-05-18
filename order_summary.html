@@ -19,19 +19,28 @@
         {% endfor %}
       </tbody>
     </table>
+    <form id="person_summary" method="get">
+    </form>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
   <script>
     $(function() {
-      console.log("ready");
       $('a').click(function() {
         person_id = $(this).attr("id");
-        loc = "./orders/" + person_id;
-        {% if start or end %}
-          loc += "?";
-          {% if start %}loc += "start={{ start }}&";{% endif %}
-          {% if end %}loc += "end={{ end }}";{% endif %}
+        form = $("#person_summary");
+        form.attr("action", "./orders/" + person_id);
+        {% if start %}
+          form.append($('<input/>')
+                  .attr("type", "hidden")
+                  .attr("name", "start")
+                  .val("{{ start }}"));
         {% endif %}
-        document.location.href = loc;
+        {% if end %}
+          form.append($('<input/>')
+                  .attr("type", "hidden")
+                  .attr("name", "end")
+                  .val("{{ end }}"));
+        {% endif %}
+        form.submit();
       });
     });
   </script>
