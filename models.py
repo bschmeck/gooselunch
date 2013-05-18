@@ -17,7 +17,7 @@ class LunchboxParser:
         # Find the date of an order on a past order page
         self.info_regex = re.compile("<h3 class.*?>(?P<date_string>.*?) from <a .*?>(?P<restaurant>.*?)</a>", re.MULTILINE | re.DOTALL)
         # Find the names of those who ordered on a past order page
-        self.name_regex = re.compile("<td><strong>(?P<name>[A-Z].*?)</strong> wanted")
+        self.name_regex = re.compile("<td><strong>(?P<name>[A-Z].*?)</strong> wanted (?P<food>.*?)</td>", re.MULTILINE)
 
         self._info_match = None
         self.orders_page = None
@@ -76,6 +76,10 @@ class LunchboxParser:
     def names(self):
         self.require_order_page("names")
         return map(lambda x: x.group('name'), self.name_regex.finditer(self.order_page))
+
+    def food(self):
+        self.require_order_page("food")
+        return map(lambda x: x.group('food'), self.name_regex.finditer(self.order_page))
 
     def require_orders_page(self, method_name):
         if not self.orders_page:

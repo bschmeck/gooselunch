@@ -39,14 +39,14 @@ class Scraper(db.Model):
                 high_seen_id = order_id
             parser.scrape_order_page(order_id)
                         
-            for name in parser.names():
+            for (name, food) in zip(parser.names(), parser.food()):
                 p = Person.all().filter('name =', name).get()
                 if not p:
                     print "Unknown person", name
                     continue
                 lunch_order = LunchOrder(date = parser.order_date(),
                                          restaurant = parser.restaurant(),
-                                         order = '',
+                                         order = food,
                                          person = p)
                 lunch_order.put()
         self.last_scrape = datetime.now()
