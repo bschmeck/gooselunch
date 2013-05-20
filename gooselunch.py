@@ -46,7 +46,7 @@ class OrderSummary(webapp2.RequestHandler):
         for lunch_order in query.run():
             totals[(lunch_order.person.name, lunch_order.person.key().name())] += 1
             
-        template_values = {'totals': totals}
+        template_values = {'totals': totals, 'updated_at': Scraper.all().get().last_scrape}
         if start:
             template_values['start_str'] = start.strftime("%m/%d/%Y")
             template_values['start'] = start.strftime("%Y%m%d")
@@ -85,7 +85,8 @@ class PersonSummary(webapp2.RequestHandler):
         
         template_values = {'count': query.count(),
                            'query': query,
-                           'person': person}
+                           'person': person,
+                           'updated_at': Scraper.all().get().last_scrape}
         if start:
             template_values['start_str'] = start.strftime("%m/%d/%Y")
         else:
