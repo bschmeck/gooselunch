@@ -5,14 +5,6 @@
   <body>
     <table>
       <tr>
-        <td><label for="start_date">Start Date (Optional)</label></td>
-        <td><input type="text" name="start_date" id="start_date" class="datepicker" /></td>
-      </tr>
-      <tr>
-        <td><label for="end_date">End Date (Optional)</label></td>
-        <td><input type="text" name="end_date" id="end_date" class="datepicker" /></td>
-      </tr>
-      <tr>
         <td><label for="person_chooser">Person</label></td>
         <td>
           <select name="person_chooser" id="person_chooser">
@@ -22,6 +14,14 @@
             {% endfor %}
           </select>
         </td>
+      </tr>
+      <tr>
+        <td><label for="start_date">Start Date (Optional)</label></td>
+        <td><input type="text" name="start_date" id="start_date" class="datepicker" /></td>
+      </tr>
+      <tr>
+        <td><label for="end_date">End Date (Optional)</label></td>
+        <td><input type="text" name="end_date" id="end_date" class="datepicker" /></td>
       </tr>
       <tr>
         <td><input type='button' id='thebutton' value='Submit'/></td>
