@@ -1,0 +1,62 @@
+<html>
+  <body>
+    <table>
+      <tr>
+        <td><label for="start_date">Start Date (Optional)</label></td>
+        <td><input type=text name="start_date" id="start_date" /></td>
+      </tr>
+      <tr>
+        <td><label for="end_date">End Date (Optional)</label></td>
+        <td><input type=text name="end_date" id="end_date" /></td>
+      </tr>
+      <tr>
+        <td><label for="person_chooser">Person</label></td>
+        <td>
+          <select name="person_chooser" id="person_chooser">
+            <option value="">Everyone</option>
+            {% for person in people: %}
+            <option value="{{ person.key().name() }}">{{person.name}}</option>
+            {% endfor %}
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td><input type='button' id='thebutton' value='Submit'/></td>
+      </tr>
+    </table>
+
+    <form method="get" id="theform"></form>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+    <script>
+      $(function() {
+        $('#thebutton').click(function(e) {
+          e.preventDefault();
+
+          form = $("#theform");
+          start_str = $("#start_date").val();
+          if (start_str != "") {
+            form.append($('<input/>')
+                  .attr("type", "hidden")
+                  .attr("name", "start")
+                  .val(start_str));
+          }
+          end_str = $("#end_date").val();
+          if (end_str != "") {
+            form.append($('<input/>')
+                  .attr("type", "hidden")
+                  .attr("name", "end")
+                  .val(end_str));
+          }
+
+          form_action = "./orders";
+          person_alias = $("#person_chooser").val()
+          if (person_alias != "") {
+            form_action += "/" + person_alias;
+          }
+          form.attr("action", form_action);
+          form.submit();
+        });
+      });
+    </script>
+  </body>
+</html>

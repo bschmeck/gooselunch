@@ -61,6 +61,12 @@ class OrderSummary(webapp2.RequestHandler):
         template = JINJA_ENVIRONMENT.get_template('order_summary.html')
         self.response.write(template.render(template_values))
         
+class Index(webapp2.RequestHandler):
+    def get(self):
+        template_values = {'people': Person.all().run()}
+        template = JINJA_ENVIRONMENT.get_template('index.html')
+        self.response.write(template.render(template_values))
+        
 class PersonSummary(webapp2.RequestHandler):
     def get(self, name):
         start, end = dates_from_request(self.request)
@@ -92,7 +98,8 @@ class PersonSummary(webapp2.RequestHandler):
         template = JINJA_ENVIRONMENT.get_template('person_summary.html')
         self.response.write(template.render(template_values))
         
-app = webapp2.WSGIApplication([('^/orders/?$', OrderSummary),
+app = webapp2.WSGIApplication([('^/?$', Index),
+                               ('^/orders/?$', OrderSummary),
                                ('/cron/(.*)/?$', Cron),
                                ('^/orders/(.+?)/?$', PersonSummary),],
                               debug=True)
