@@ -1,4 +1,4 @@
 cron:
 - description: automated scraper
   url: /cron/scrape
-  schedule: every day 00:00
+  schedule: every day 20:00
