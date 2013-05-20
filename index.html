@@ -1,13 +1,16 @@
 <html>
+  <head>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+  </head>
   <body>
     <table>
       <tr>
         <td><label for="start_date">Start Date (Optional)</label></td>
-        <td><input type=text name="start_date" id="start_date" /></td>
+        <td><input type="text" name="start_date" id="start_date" class="datepicker" /></td>
       </tr>
       <tr>
         <td><label for="end_date">End Date (Optional)</label></td>
-        <td><input type=text name="end_date" id="end_date" /></td>
+        <td><input type="text" name="end_date" id="end_date" class="datepicker" /></td>
       </tr>
       <tr>
         <td><label for="person_chooser">Person</label></td>
@@ -26,9 +29,11 @@
     </table>
 
     <form method="get" id="theform"></form>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
     <script>
       $(function() {
+        $('.datepicker').datepicker({ dateFormat: "yymmdd" });
         $('#thebutton').click(function(e) {
           e.preventDefault();
 
