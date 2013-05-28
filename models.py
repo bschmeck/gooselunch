@@ -15,7 +15,7 @@ class LunchboxParser:
         # Find the URLs of past orders on the past order list page
         self.order_regex = re.compile("/orders/view_past/(?P<order_id>\d+)")
         # Find the date of an order on a past order page
-        self.info_regex = re.compile("<h3 class.*?>(?P<date_string>.*?) from <a .*?>(?P<restaurant>.*?)</a>", re.MULTILINE | re.DOTALL)
+        self.info_regex = re.compile("<h3 class.*?>(?P<date_string>.*?) from (<a .*?>)?(?P<restaurant>.*?)(</a>)?</h3>", re.MULTILINE | re.DOTALL)
         # Find the names of those who ordered on a past order page
         self.name_regex = re.compile("<td><strong>(?P<name>[A-Z].*?)</strong> wanted (?P<food>.*?)</td>", re.MULTILINE)
 
