@@ -74,7 +74,7 @@ class LunchboxParser:
     
     def restaurant(self):
         self.require_order_page("restaurant")
-        return self.info_match().group('restaurant')
+        return self.info_match().group('restaurant').strip()
     
     def names(self):
         self.require_order_page("names")
