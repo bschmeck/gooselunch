@@ -20,15 +20,18 @@ class LunchboxParser:
         self.name_regex = re.compile("<td><strong>(?P<name>[A-Z].*?)</strong> wanted (?P<food>.*?)</td>", re.MULTILINE)
 
         self._info_match = None
+        self._order_id = None
         self.orders_page = None
         self.order_page = None
         self.lunchbox = None
         
     def scrape_orders_page(self):
+        self._order_id = None
         self.orders_page = self.lunchbox.past_orders()
         
     def scrape_order_page(self, order_id):
         self._info_match = None
+        self._order_id = order_id
         self.order_page = self.lunchbox.past_order(order_id)
         
     def set_scraper(self, scraper):
@@ -61,7 +64,7 @@ class LunchboxParser:
         if not self._info_match:
             self._info_match = self.info_regex.search(self.order_page)
         if not self._info_match:
-            raise ParseError("Unable to find info string for order %s" % url)
+            raise ParseError("Unable to find info string for order %s" % self._order_id)
         
         return self._info_match
     
