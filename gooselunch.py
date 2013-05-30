@@ -82,7 +82,8 @@ class PersonSummary(webapp2.RequestHandler):
             query.filter("date >= ", start)
         if end:
             query.filter("date <= ", end)
-        
+        query.order("date")
+
         template_values = {'count': query.count(),
                            'query': query,
                            'person': person,
