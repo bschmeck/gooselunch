@@ -70,7 +70,7 @@ class LunchboxParser:
     
     def order_date(self):
         self.require_order_page("order_date")
-        return datetime.strptime(self.info_match().group('date_string').strip(), "%A, %B %d, %Y").date()
+        return datetime.strptime(self.info_match().group('date_string').strip(), "%A, %b %d, %Y").date()
     
     def restaurant(self):
         self.require_order_page("restaurant")
