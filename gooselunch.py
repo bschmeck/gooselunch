@@ -66,6 +66,12 @@ class Index(webapp2.RequestHandler):
         template_values = {'people': Person.all().run()}
         template = JINJA_ENVIRONMENT.get_template('index.html')
         self.response.write(template.render(template_values))
+
+class AddPerson(webapp2.RequestHandler):
+    def get(self):
+        name = self.request.get("name")
+        key = self.request.get("key")
+        Person(key_name=key, name=name).put()
         
 class PersonSummary(webapp2.RequestHandler):
     def get(self, name):
@@ -103,6 +109,7 @@ class PersonSummary(webapp2.RequestHandler):
 app = webapp2.WSGIApplication([('^/?$', Index),
                                ('^/orders/?$', OrderSummary),
                                ('/cron/(.*)/?$', Cron),
-                               ('^/orders/(.+?)/?$', PersonSummary),],
+                               ('^/orders/(.+?)/?$', PersonSummary),
+                               ('^/add_person/?$', AddPerson),],
                               debug=True)
 
